@@ -1,0 +1,1 @@
+This is canal 1 communication to the agent (the text file)
