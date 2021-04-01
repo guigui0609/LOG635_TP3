@@ -30,6 +30,19 @@ class Room:
         else:
             raise Exception("Unexepected value for directions. Expected values : TOP, RIGHT, BOTTOM, LEFT")
 
+    def get_neighbour_room(self, direction: Directions) -> "Room":
+
+        if direction == Directions.TOP:
+            return self.top_room
+        elif direction == Directions.RIGHT:
+            return self.right_room
+        elif direction == Directions.BOTTOM:
+            return self.bottom_room
+        elif direction == Directions.LEFT:
+            return self.left_room
+        else:
+            raise Exception("Unexepected value for directions. Expected values : TOP, RIGHT, BOTTOM, LEFT")
+
     def add_character(self, character_type: CharacterTypes):
         self.character = character_type
 

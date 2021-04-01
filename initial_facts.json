@@ -1,0 +1,26 @@
+{
+    "couteau": {
+        "texte": "Un couteau cause une poitrine incisée",
+        "fichier": "grammars/arme_marque.fcfg"
+    },
+    "marteau": {
+        "texte": "Un marteau cause un crâne fendu",
+        "fichier": "grammars/arme_marque.fcfg"
+    },
+    "fusil": {
+        "texte": "Un fusil cause une poitrine perforée",
+        "fichier": "grammars/arme_marque.fcfg"
+    },
+    "corde": {
+        "texte": "Une corde cause un cou lacéré",
+        "fichier": "grammars/arme_marque.fcfg"
+    },
+    "tronçonneuse": {
+        "texte": "Une tronçonneuse cause un corps déchiqueté",
+        "fichier": "grammars/arme_marque.fcfg"
+    },
+    "chandelier": {
+        "texte": "Un chandelier cause un corps calciné",
+        "fichier": "grammars/arme_marque.fcfg"
+    }
+}

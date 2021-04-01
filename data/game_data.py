@@ -29,5 +29,5 @@ class WeaponTypes(Enum):
     MARTEAU = "Marteau"
     FUSIL = "Fusil"
     CORDE = "Corde"
-    CLE_ANGLAISE = "Cle anglaise"
+    TRONCONNEUSE = "Tronçonneuse"
     CHANDELIER = "Chandelier"

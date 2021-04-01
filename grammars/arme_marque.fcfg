@@ -1,0 +1,23 @@
+%start S
+
+S[SEM=<Arme_Effet(?np, ?adj)>] -> NP[SEM=?np] V NP2[SEM=?adj]
+NP[SEM=?np] -> Det N[SEM=?np]
+NP2[SEM=?adj] -> Det N Adj[SEM=?adj]
+NP -> Det N Adj[SEM=?np]
+V -> 'cause'
+Det -> 'un' | 'une' | 'Un' | 'Une'
+N -> 'poitrine' | 'crâne' | 'cou' | 'corps'
+
+Adj[SEM=<Incisee>] -> 'incisée'
+Adj[SEM=<Fendu>] -> 'fendu'
+Adj[SEM=<Perforee>] -> 'perforée'
+Adj[SEM=<Lacere>] -> 'lacéré'
+Adj[SEM=<Dechiquete>] -> 'déchiqueté'
+Adj[SEM=<Calcine>] -> 'calciné'
+
+N[SEM=<Couteau>] -> 'couteau'
+N[SEM=<Marteau>] -> 'marteau'
+N[SEM=<Fusil>] -> 'fusil'
+N[SEM=<Corde>] -> 'corde'
+N[SEM=<Tronconneuse>] -> 'tronçonneuse'
+N[SEM=<Chandelier>] -> 'chandelier'

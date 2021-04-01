@@ -1,113 +1,34 @@
-import math
 import random
 
-from data.data import Directions
-from data.game_data import RoomTypes, CharacterTypes, WeaponTypes
+from game.agent import Agent
+from game.board import Board
 from game.crime import Crime
-from game.room import Room
 
 
 class Game:
 
     def __init__(self, nb_rooms, nb_characters, nb_weapons):
 
-        self.nb_rooms = nb_rooms
-        self.nb_characters = nb_characters
-        self.nb_weapons = nb_weapons
-        self.rooms = []
-        self.characters = []
-        self.weapons = []
+        self.board = None
         self.crime = None
+        self.board = Board(nb_rooms, nb_characters, nb_weapons)
+        self.agent = Agent(self.board.rooms, self.board.characters, self.board.weapons)
 
     def generate(self):
 
-        self.generate_rooms()
-        self.place_characters()
-        self.place_weapons()
+        self.board.generate()
         self.generate_crime()
-
-    def generate_rooms(self):
-
-        room_types = []
-
-        room_types_iter = RoomTypes.__iter__()
-        for i in range(self.nb_rooms):
-            room_types.append(room_types_iter.__next__())
-
-        random.shuffle(room_types)
-
-        room_width = int(math.sqrt(len(room_types)))
-        room_height = math.ceil(len(room_types) / room_width)
-        direction = None
-
-        for i in range(room_height):
-            for j in range(room_width):
-
-                if room_width * i + j >= len(room_types):
-                    break
-
-                bottom_room = None
-                if i > 0:
-                    bottom_room = self.rooms[room_width * (i - 1) + j]
-
-                left_room = None
-                if j > 0:
-                    left_room = self.rooms[room_width * i + j - 1]
-
-                room_type = room_types[room_width * i + j]
-                room = Room(room_type)
-
-                if bottom_room is not None:
-                    room.add_neighbour_room(bottom_room, Directions.BOTTOM)
-
-                if left_room is not None:
-                    room.add_neighbour_room(left_room, Directions.LEFT)
-
-                self.rooms.append(room)
-
-    def place_characters(self):
-
-        indexes = []
-        for i in range(len(self.rooms)):
-            indexes.append(i)
-
-        character_types = []
-        character_types_iter = CharacterTypes.__iter__()
-
-        for i in range(self.nb_characters):
-
-            index = int(random.random() * len(indexes))
-            character = character_types_iter.__next__()
-            self.rooms[index].add_character(character)
-            self.characters.append(character)
-            indexes.pop(index)
-
-    def place_weapons(self):
-
-        indexes = []
-        for i in range(len(self.rooms)):
-            indexes.append(i)
-
-        weapon_types = []
-        weapon_types_iter = WeaponTypes.__iter__()
-
-        for i in range(self.nb_weapons):
-
-            index = int(random.random() * len(indexes))
-            weapon = weapon_types_iter.__next__()
-            self.rooms[index].add_weapon(weapon)
-            self.weapons.append(weapon)
-            indexes.pop(index)
+        self.agent.get_initial_facts()
 
     def generate_crime(self):
 
-        character_index = int(random.random() * len(self.characters))
-        character = self.characters[character_index]
+        character_index = int(random.random() * len(self.board.characters))
+        character = self.board.characters[character_index]
 
-        weapon_index = int(random.random() * len(self.weapons))
-        weapon = self.weapons[weapon_index]
+        weapon_index = int(random.random() * len(self.board.weapons))
+        weapon = self.board.weapons[weapon_index]
 
-        index = int(random.random() * len(self.rooms))
-        room = self.rooms[index]
+        index = int(random.random() * len(self.board.rooms))
+        room = self.board.rooms[index]
 
         self.crime = Crime(character, weapon, room)
