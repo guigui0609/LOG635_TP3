@@ -1,5 +1,6 @@
 from data.data import Directions
 from data.game_data import RoomTypes, WeaponTypes, CharacterTypes
+from game.character import Character
 
 
 class Room:
@@ -11,8 +12,9 @@ class Room:
         self.right_room = None
         self.bottom_room = None
         self.left_room = None
-        self.character = None
+        self.characters = {}
         self.weapon = None
+        self.neighbour_rooms = []
 
     def add_neighbour_room(self, neighbour_room: "Room", direction: Directions, one_way = False):
 
@@ -30,6 +32,8 @@ class Room:
         else:
             raise Exception("Unexepected value for directions. Expected values : TOP, RIGHT, BOTTOM, LEFT")
 
+        self.neighbour_rooms.append(neighbour_room)
+
     def get_neighbour_room(self, direction: Directions) -> "Room":
 
         if direction == Directions.TOP:
@@ -43,8 +47,8 @@ class Room:
         else:
             raise Exception("Unexepected value for directions. Expected values : TOP, RIGHT, BOTTOM, LEFT")
 
-    def add_character(self, character_type: CharacterTypes):
-        self.character = character_type
+    def add_character(self, character: Character):
+        self.characters[character.character_type] = character
 
     def add_weapon(self, weapon_type: WeaponTypes):
         self.weapon = weapon_type

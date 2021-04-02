@@ -1,4 +1,4 @@
-from game.game import Game
+from game.board import Board
 
-game = Game(10, 10, 6)
-game.generate()
+board = Board(10, 10, 6)
+board.start_game()

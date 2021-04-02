@@ -1,12 +1,17 @@
 import math
 import random
+from typing import List
 
 from data.data import Directions
 from data.game_data import RoomTypes, CharacterTypes, WeaponTypes
+from game.agent import Agent
+from game.character import Character
 from game.room import Room
 
 
 class Board:
+
+    BEGIN_TIME = 8
 
     def __init__(self, nb_rooms, nb_characters, nb_weapons):
 
@@ -14,15 +19,27 @@ class Board:
         self.nb_characters = nb_characters
         self.nb_weapons = nb_weapons
         self.rooms = []
-        self.characters = []
+        self.characters: List[Character] = []
         self.weapons = []
-        self.crime = None
+        self.criminal = None
+        self.victim = None
+        self.agent = Agent(self.rooms, self.characters, self.weapons)
 
-    def generate(self):
+        self.ticks = 0
+        self.afternoon = True
+
+    def start_game(self):
 
         self.generate_rooms()
         self.place_characters()
         self.place_weapons()
+        self.generate_crime()
+        self.agent.get_initial_facts()
+
+        input("L'agent AI arrive sur les lieux du crime afin d'enquêter sur le meurtre. Entrez n'importe quelle touche"
+                    "afin de commencer l'enquête.")
+
+        self.start_investigation()
 
     def generate_rooms(self):
 
@@ -73,7 +90,8 @@ class Board:
         for i in range(self.nb_characters):
 
             index = int(random.random() * len(indexes))
-            character = character_types_iter.__next__()
+            character_type = character_types_iter.__next__()
+            character = Character(character_type, self.rooms[index])
             self.rooms[index].add_character(character)
             self.characters.append(character)
             indexes.pop(index)
@@ -93,3 +111,85 @@ class Board:
             self.rooms[index].add_weapon(weapon)
             self.weapons.append(weapon)
             indexes.pop(index)
+
+    # On génère les circonstances entourant le meurtre, c'est-à-dire les actions des personnages avant et après le meurtre
+    def generate_crime(self):
+
+        character_index = int(random.random() * len(self.characters))
+        self.criminal = self.characters[character_index]
+
+        weapon_taken = False
+        victim_killed = False
+        victim_discovered = False
+
+        # Tant qu'une victime n'est pas découverte, les personnages se déplacent dans le manoir de manière aléatoire
+        while not victim_discovered:
+
+            hour = (self.__class__.BEGIN_TIME + self.ticks) % 12
+            time = str(hour) + ":00"
+
+            #print("L'horloge sonne " + str(hour) + " coups. Il est " + time + " heure")
+            self.ticks += 1
+
+            for character in self.characters:
+
+                # À chaque heure, chaque personnage vivant se déplace vers une pièce adjacente
+                if not character.victim:
+                    character.move_to_adjacent_room()
+
+
+            # Lorsque le meurtrier entre dans une pièce qui contient une arme, il récupère celle-ci
+            if self.criminal.room.weapon != None and not weapon_taken:
+
+                print("Il est {} heure. Le criminel, {}, trouve un(e) {} dans le/la {}. Il le/la ramasse avec appréhension".format(
+                    time,
+                    self.criminal.character_type.value,
+                    self.criminal.room.weapon.value,
+                    self.criminal.room.room_type.value))
+
+                self.criminal.take_weapon()
+                weapon_taken = True
+
+            # Lorsque le meurtrier a pris son arme et qu'il se trouve dans la même pièce qu'un autre personnage,
+            # il l'assassine et ce personnage devient la victime
+            elif weapon_taken and len(self.criminal.room.characters) > 1 and not victim_killed:
+
+                characters = self.criminal.room.characters.values()
+
+                for character in characters:
+
+                    # Le criminel assassine un des personnages de la pièce qui n'est pas lui-même
+                    if character.character_type is not self.criminal.character_type:
+
+                        character.victim = True
+                        self.victim = character
+                        victim_killed = True
+
+                        print("Il est {} heure. Le criminel, {}, assassine {} avec son/sa {} dans le/la {}".format(
+                            time,
+                            self.criminal.character_type.value,
+                            self.victim.character_type.value,
+                            self.criminal.weapon.value,
+                            self.criminal.room.room_type.value))
+                        break
+
+            # Lorsqu'il y a un autre personnage dans la pièce de la victime, celui-ci découvre la victime
+            elif victim_killed and len(self.victim.room.characters) > 1:
+
+                characters = self.criminal.room.characters.values()
+
+                # Le personnage dans la pièce qui n'est pas la victime elle-même découvre la victime
+                for character in characters:
+                    if character.character_type is not self.victim.character_type:
+                        victim_discovered = True
+                        print("Il est {} heure. {} découvre le corps de {} dans le/la {}".format(
+                            time,
+                            character.character_type.value,
+                            self.victim.character_type.value,
+                            self.victim.room.room_type.value))
+                        break
+
+    def start_investigation(self):
+
+        # TODO
+        pass
