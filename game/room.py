@@ -14,6 +14,7 @@ class Room:
         self.left_room = None
         self.characters = {}
         self.weapon = None
+        self.dropped_weapon = None
         self.neighbour_rooms = []
 
     def add_neighbour_room(self, neighbour_room: "Room", direction: Directions, one_way = False):
@@ -52,3 +53,6 @@ class Room:
 
     def add_weapon(self, weapon_type: WeaponTypes):
         self.weapon = weapon_type
+
+    def drop_weapon(self, weapon_type: WeaponTypes):
+        self.dropped_weapon = weapon_type

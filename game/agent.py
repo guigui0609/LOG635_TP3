@@ -3,7 +3,6 @@ import json
 import nltk
 
 from data.data import Directions
-from game.fact import Fact
 
 
 class Agent:
@@ -37,10 +36,10 @@ class Agent:
 
     # L'agent demande à l'humain un fait. L'humain lui répond avec une phrase contenant ce fait. L'agent transforme
     # la phrase contenant le fait en clause de type FOL
-    def ask_for_fact(self, fact: Fact):
+    def ask_for_fact(self, interrogation_sentece, fcfg):
 
-        answer = input(fact.get_interrogation_sentence())
-        fol = self.to_fol(answer, fact.fcfg)
+        answer = input(interrogation_sentece)
+        fol = self.to_fol(answer, fcfg)
         self.crime_inference.add_clause(fol)
 
 
