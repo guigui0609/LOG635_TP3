@@ -3,6 +3,7 @@ import json
 import nltk
 
 from data.data import Directions
+from game.CrimeInference import CrimeInference
 
 
 class Agent:
@@ -11,7 +12,7 @@ class Agent:
 
     def __init__(self, rooms, characters, weapons):
         self.current_room = None
-        # self.crime_inference = CrimeInference(rooms, characters, weapons)
+        self.crime_inference = CrimeInference(rooms, characters, weapons)
 
     def move(self, direction: Directions):
         self.current_room = self.current_room.get_neighbour_room(direction)
