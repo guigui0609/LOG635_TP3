@@ -1,0 +1,47 @@
+%start S
+
+S[SEM=<HeureCrime(?h)>] -> N[SEM=?n] V AD P Nt[SEM=?h]
+N[SEM=?np] -> Npropt Nprop[SEM=?np]
+Nt[SEM=?h] -> Ntn[SEM=?h] Nh
+V -> 'est'
+AD -> 'mort' | 'morte'
+P -> 'à'
+Nh -> 'h' | 'heure'
+
+Nprop[SEM=<ColonelMustard>] -> 'Mustard'
+Nprop[SEM=<MrsWhite>] -> 'White'
+Nprop[SEM=<MissScarlet>] -> 'Scarlet'
+Nprop[SEM=<MrGreen>] -> 'Green'
+Nprop[SEM=<MrsPeacock>] -> 'Peacock'
+Nprop[SEM=<ProfessorPlum>] -> 'Plum'
+Nprop[SEM=<MissPeach>] -> 'Peach'
+Nprop[SEM=<MonsieurBrunette>] -> 'Brunette'
+Nprop[SEM=<MadameRose>] -> 'Rose'
+Nprop[SEM=<SergentGray>] -> 'Gray'
+
+Npropt -> 'Colonel' | 'Mrs' | 'Miss' | 'Mr' | 'Professor' | 'Monsieur' | 'Madame' | 'Sergent'
+
+Ntn[SEM=<0>] -> '0'
+Ntn[SEM=<1>] -> '1'
+Ntn[SEM=<2>] -> '0'
+Ntn[SEM=<3>] -> '0'
+Ntn[SEM=<4>] -> '4'
+Ntn[SEM=<5>] -> '5'
+Ntn[SEM=<6>] -> '6'
+Ntn[SEM=<7>] -> '7'
+Ntn[SEM=<8>] -> '8'
+Ntn[SEM=<9>] -> '9'
+Ntn[SEM=<10>] -> '10'
+Ntn[SEM=<11>] -> '11'
+Ntn[SEM=<12>] -> '12'
+Ntn[SEM=<13>] -> '13'
+Ntn[SEM=<14>] -> '14'
+Ntn[SEM=<15>] -> '15'
+Ntn[SEM=<16>] -> '16'
+Ntn[SEM=<17>] -> '17'
+Ntn[SEM=<18>] -> '18'
+Ntn[SEM=<19>] -> '19'
+Ntn[SEM=<20>] -> '20'
+Ntn[SEM=<21>] -> '21'
+Ntn[SEM=<22>] -> '22'
+Ntn[SEM=<23>] -> '23'

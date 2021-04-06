@@ -7,15 +7,19 @@ import speech_recognition as sr
 import keyboard
 from enum import Enum
 
-# Class enum utilisé pour la communication avec les touches directionnelels et les touches oui et non
+# Class enum utilisé pour la communication avec les touches directionnelles et les touches oui et non
 class SpecificKeys(Enum):
     UP_ARROW = "Top"
-    DOWN_ARROW = "Right"
-    LEFT_ARROW = "Bottom"
-    RIGHT_ARROW = "Left"
+    DOWN_ARROW = "Bottom"
+    LEFT_ARROW = "Left"
+    RIGHT_ARROW = "Right"
     YES = "1"
     NO = "2"
     INVALID = "INVALID"
+
+class CommunicationTypes(Enum):
+    AUDIO = "1"
+    TEXT = "2"
 
 class IOController:
     def __init__(self):
@@ -58,11 +62,7 @@ class IOController:
                     self.__outputToTerminal("J'ai compris: \"" + inputText + "\" Est-ce correct?")
 
                     # Pour simuler une vrai conversation avec un robot :)
-                    self.__outputTextAsSound("J'ai compris")
-                    self.__outputTextAsSound(inputText)
-                    self.__outputTextAsSound("Est-ce correct?")
-
-                    promptAnswer = self.__inputYesNoFromTerminal()
+                    promptAnswer = self.inputYesNoFromTerminal("J'ai compris " + inputText + ". Est-ce correct?", True)
                     if promptAnswer == SpecificKeys.YES:
                         self.__micInputUsed = True
                         return inputText
@@ -78,7 +78,7 @@ class IOController:
             inputText = self.__inputFromFile()
             self.__outputToTerminal("J'ai lu: \"" + inputText + "\". Est-ce correct?")
 
-            promptAnswer = self.__inputYesNoFromTerminal()
+            promptAnswer = self.inputYesNoFromTerminal()
             if promptAnswer == SpecificKeys.YES:
                 self.__textFileInputUsed = True
                 return inputText
@@ -102,7 +102,24 @@ class IOController:
     # Méthode pour avoir une touche directionnelle. Utilisé pour se déplacer de pièces en pièces.
     # Canal de communication 4: L'utilisateur utilise les touches directionnelles dans le terminal
     def inputArrowKeyFromTerminal(self):
-        print("Entrez une touche directionnelle pour changer de pièce")
+        print("Entrez une touche directionnelle pour changer de pièce.")
+        self.__keyPressed = SpecificKeys.INVALID
+
+        while self.__keyPressed == SpecificKeys.INVALID:
+            time.sleep(1)
+
+        print()
+        return self.__keyPressed
+
+    # Canal de communication 4: l'utilisateur dit oui ou non à travers le terminal
+    def inputYesNoFromTerminal(self, msg, output_as_sound = False):
+
+        if output_as_sound:
+            self.__outputTextAsSound(msg)
+        else:
+            print(msg)
+
+        print("Entrez 1 pour OUI ou 2 pour NON")
         self.__keyPressed = SpecificKeys.INVALID
 
         while self.__keyPressed == SpecificKeys.INVALID:
@@ -139,17 +156,6 @@ class IOController:
     def __inputTextFromTerminal(self):
         return input()
 
-    # Canal de communication 4: l'utilisateur dit oui ou non à travers le terminal
-    def __inputYesNoFromTerminal(self):
-        print("Entrez 1 pour OUI ou 2 pour NON")
-        self.__keyPressed = SpecificKeys.INVALID
-
-        while self.__keyPressed == SpecificKeys.INVALID:
-            time.sleep(1)
-
-        print()
-        return self.__keyPressed
-
     def __yesButtonReleased(self, e):
         self.__keyPressed = SpecificKeys.YES
 
@@ -175,7 +181,7 @@ class IOController:
         while not readyToRead:
             self.__outputToTerminal("Veuillez entrer le texte dans le fichier inputFile.txt")
             self.__outputToTerminal("Est-ce que le fichier inputFile.txt est prêt à être lu?")
-            promptInput = self.__inputYesNoFromTerminal()
+            promptInput = self.inputYesNoFromTerminal()
 
             if promptInput == SpecificKeys.YES:
                 readyToRead = True

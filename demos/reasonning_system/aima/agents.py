@@ -35,7 +35,7 @@ EnvCanvas ## Canvas to display the environment of an EnvGUI
 #
 # Speed control in GUI does not have any effect -- fix it.
 
-from aima.utils import distance_squared, turn_heading
+from demos.reasonning_system.aima.utils import distance_squared, turn_heading
 from statistics import mean
 
 import random

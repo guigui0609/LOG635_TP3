@@ -1,0 +1,25 @@
+%start S
+
+S[SEM=<Personne_Marque(?np, ?adj)>] -> N[SEM=?n] V Adj[SEM=?adj]
+N[SEM=?n] -> Nprop[SEM=?n]  Nt
+V -> 'est'
+
+Nprop[SEM=<ColonelMustard>] -> 'Mustard'
+Nprop[SEM=<MrsWhite>] -> 'White'
+Nprop[SEM=<MissScarlet>] -> 'Scarlet'
+Nprop[SEM=<MrGreen>] -> 'Green'
+Nprop[SEM=<MrsPeacock>] -> 'Peacock'
+Nprop[SEM=<ProfessorPlum>] -> 'Plum'
+Nprop[SEM=<MissPeach>] -> 'Peach'
+Nprop[SEM=<MonsieurBrunette>] -> 'Brunette'
+Nprop[SEM=<MadameRose>] -> 'Rose'
+Nprop[SEM=<SergentGray>] -> 'Gray'
+
+Nt -> 'Colonel' | 'Mrs' | 'Miss' | 'Mr' | 'Professor' | 'Monsieur' | 'Madame' | 'Sergent'
+
+Adj[SEM=<Incisee>] -> 'incisée'
+Adj[SEM=<Fendu>] -> 'fendu'
+Adj[SEM=<Perforee>] -> 'perforée'
+Adj[SEM=<Lacere>] -> 'lacéré'
+Adj[SEM=<Dechiquete>] -> 'déchiqueté'
+Adj[SEM=<Calcine>] -> 'calciné'

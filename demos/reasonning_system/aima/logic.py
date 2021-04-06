@@ -31,12 +31,12 @@ And a few other functions:
     diff, simp       Symbolic differentiation and simplification
 """
 
-from aima.utils import (
+from demos.reasonning_system.aima.utils import (
     removeall, unique, first, argmax, probability,
     isnumber, issequence, Expr, expr, subexpressions
 )
-import aima.agents
-from aima.search import astar_search, PlanRoute
+import demos.reasonning_system.aima.agents
+from demos.reasonning_system.aima.search import astar_search, PlanRoute
 
 import itertools
 import random
@@ -1037,7 +1037,7 @@ class WumpusPosition():
 # ______________________________________________________________________________
 
 
-class HybridWumpusAgent(aima.agents.Agent):
+class HybridWumpusAgent(demos.reasonning_system.aima.agents.Agent):
     """An agent for the wumpus world that does logical inference. [Figure 7.20]"""
 
     def __init__(self):

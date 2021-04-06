@@ -16,6 +16,7 @@ class Room:
         self.weapon = None
         self.dropped_weapon = None
         self.neighbour_rooms = []
+        self.visited = False
 
     def add_neighbour_room(self, neighbour_room: "Room", direction: Directions, one_way = False):
 

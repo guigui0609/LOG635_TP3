@@ -1,6 +1,6 @@
 %start S
 
-S[SEM=<Arme_Effet(?np, ?adj)>] -> NP[SEM=?np] V NP2[SEM=?adj]
+S[SEM=<Arme_Marque(?np, ?adj)>] -> NP[SEM=?np] V NP2[SEM=?adj]
 NP[SEM=?np] -> Det N[SEM=?np]
 NP2[SEM=?adj] -> Det N Adj[SEM=?adj]
 NP -> Det N Adj[SEM=?np]
