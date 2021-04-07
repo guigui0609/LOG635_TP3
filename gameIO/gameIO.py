@@ -56,6 +56,7 @@ class IOController:
                     output = "Je n'ai pas réussi à capter votre voix."
                     self.__outputToTerminal(output)
                     self.__outputTextAsSound(output)
+                    self.__incrementSpeechFailedCounter()
                     return self.__handleInputFailed(True)
 
                 else:
@@ -69,11 +70,7 @@ class IOController:
                         self.__micInputUsed = True
                         return inputText
                     else:
-                        self.__micInputFailedAttempt += 1
-
-                        if self.__micInputFailedAttempt == 2:
-                            self.__micInputUsed = True # On abandonne le mic!
-
+                        self.__incrementSpeechFailedCounter()
                         return self.__handleInputFailed(True)
 
         elif not self.__textFileInputUsed:
@@ -104,8 +101,8 @@ class IOController:
     # Méthode pour avoir une touche directionnelle. Utilisé pour se déplacer de pièces en pièces.
     # Canal de communication 4: L'utilisateur utilise les touches directionnelles dans le terminal
     def inputArrowKeyFromTerminal(self):
-        print("Entrez une touche directionnelle pour changer de pièce.")
         self.__keyPressed = SpecificKeys.INVALID
+        print("Entrez une touche directionnelle pour changer de pièce.")
 
         while self.__keyPressed == SpecificKeys.INVALID:
             time.sleep(1)
@@ -115,8 +112,8 @@ class IOController:
 
     # Canal de communication 4: l'utilisateur dit oui ou non à travers le terminal
     def inputYesNoFromTerminal(self):
-        print("Entrez 1 pour OUI ou 2 pour NON")
         self.__keyPressed = SpecificKeys.INVALID
+        print("Entrez 1 pour OUI ou 2 pour NON")
 
         while self.__keyPressed == SpecificKeys.INVALID:
             time.sleep(1)
@@ -127,7 +124,7 @@ class IOController:
     # Canal de communication 3: L'agent écrit à l'utilisateur via le terminal
     def __outputToTerminal(self, textToOutput):
         print(textToOutput)
-        time.sleep(2)
+        time.sleep(1)
 
     # Méthodes privés
 
@@ -139,6 +136,12 @@ class IOController:
             self.__outputTextAsSound(output)
 
         return self.__inputTextFromTerminal()
+
+    def __incrementSpeechFailedCounter(self):
+        self.__micInputFailedAttempt += 1
+
+        if self.__micInputFailedAttempt == 2:
+            self.__micInputUsed = True  # On abandonne le mic si ça ne marche pas après 2 essais!
 
     # Canal de communication 2, l'agent communique à l'utilisateur à travers le son
     def __outputTextAsSound(self, textToOutput):
