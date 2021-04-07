@@ -23,8 +23,8 @@ Npropt -> 'Colonel' | 'Mrs' | 'Miss' | 'Mr' | 'Professor' | 'Monsieur' | 'Madame
 
 Ntn[SEM=<0>] -> '0'
 Ntn[SEM=<1>] -> '1'
-Ntn[SEM=<2>] -> '0'
-Ntn[SEM=<3>] -> '0'
+Ntn[SEM=<2>] -> '2'
+Ntn[SEM=<3>] -> '3'
 Ntn[SEM=<4>] -> '4'
 Ntn[SEM=<5>] -> '5'
 Ntn[SEM=<6>] -> '6'

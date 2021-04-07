@@ -1,4 +1,4 @@
 from game.board import Board
 
-board = Board(10, 10, 6)
+board = Board(4, 4, 2)
 board.start_game()

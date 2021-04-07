@@ -23,7 +23,10 @@ class Character:
         self.rooms[time] = self.room
 
     def encounter(self, time):
-        self.encounters[time] = self.room.characters.values()
+        self.encounters[time] = list(self.room.characters.values())
+
+        # for character in self.room.characters.values():
+        #               print(self.character_type.value + " encountered " + character.character_type.value + " at " + str(time) + " dans la " + self.room.room_type.value)
 
     def take_weapon(self):
 

@@ -12,12 +12,13 @@ class Agent:
 
     INITIAL_FACTS_PATH = "initial_facts.json"
 
-    def __init__(self, rooms, characters, weapons):
+    def __init__(self, start_room, rooms, characters, weapons, crime_time, drop_weapon_time):
+
         self.game_io = IOController()
-        self.current_room = None
+        self.current_room = start_room
         self.crime_inference = CrimeInference(rooms, characters, weapons)
-        self.crime_time = None
-        self.drop_weapon_time = None
+        self.crime_time = crime_time
+        self.drop_weapon_time = drop_weapon_time
 
     # Repris de Reasoning System.ipynb
     def results_as_string(self, results):
@@ -44,9 +45,6 @@ class Agent:
         answer = self.game_io.input()
         fol = self.to_fol(answer, fcfg)
         self.crime_inference.add_clause(fol)
-
-        return answer
-
 
     # L'agent transforme les faits initiaux en clauses de type FOL
     def get_initial_facts(self):
@@ -79,34 +77,22 @@ class Agent:
             print(
                 encounter.character_type.value + " se trouvait dans le/la " + room + " à " + str(time) + "h")
             encounter = encounter.character_type.value
-            self.crime_inference.add_clause(self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause,
-                                                                                encounter,
-                                                                                room,
-                                                                                time))
+            self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause, encounter, room, time)
 
     def discover_weapon(self, weapon, room):
 
         print("L'agent trouve un/une " + weapon)
-        self.crime_inference.add_clause(self.crime_inference.create_clause(
-            self.crime_inference.weapon_room_clause,
-            weapon,
-            room))
-        self.crime_inference.add_clause(self.crime_inference.create_clause(
-            self.crime_inference.arme_clause,
-            weapon
-        ))
+        self.crime_inference.create_clause(self.crime_inference.weapon_room_clause, weapon, room)
 
     def discover_victim(self, character, room, time):
 
         print("L'agent découvre le corps de " + character.character_type.value)
-        self.crime_inference.add_clause(
-            self.crime_inference.create_clause(self.crime_inference.personne_clause,
-                                                     character.character_type.value))
-        self.crime_inference.add_clause(
-            self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause,
-                                                     character.character_type.value,
-                                                     room,
-                                                     time))
+
+        self.crime_inference.create_clause(self.crime_inference.victim_clause, character.character_type.value)
+        self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause, character.character_type.value,
+                                                     room, time)
+
+        self.ask_for_fact("Dans quel état est le corps de " + character.character_type.value + "?", "grammars/personne_marque.fcfg")
 
     def discover_character(self, character, room, time):
 
@@ -116,14 +102,8 @@ class Agent:
         if key == "1":
             self.interrogate(character)
 
-        self.crime_inference.add_clause(
-            self.crime_inference.create_clause(self.crime_inference.personne_clause,
-                                               character.character_type.value))
-        self.crime_inference.add_clause(
-            self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause,
-                                               character.character_type.value,
-                                               room,
-                                               time))
+        self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause, character.character_type.value,
+                                               room, time)
 
     def move(self):
 

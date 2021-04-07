@@ -13,6 +13,7 @@ class CharacterTypes(Enum):
     SERGENT_GRAY = "Sergent Gray"
 
 class RoomTypes(Enum):
+    HALL = "Hall"
     SALON = "Salon"
     CUISINE = "Cuisine"
     SALLE_A_MANGER = "Salle a manger"
@@ -21,7 +22,6 @@ class RoomTypes(Enum):
     SALLE_DE_JEU = "Salle de jeu"
     SALLE_DE_BAIN = "Salle de bain"
     CHAMBRE = "Chambre"
-    HALL = "Hall"
     GARAGE = "Garage"
 
 class WeaponTypes(Enum):

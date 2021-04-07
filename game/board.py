@@ -23,7 +23,11 @@ class Board:
         self.weapons = []
         self.criminal = None
         self.victim = None
-        self.agent = Agent(self.rooms, self.characters, self.weapons)
+        self.start_room = None
+        self.agent = None
+
+        self.crime_time = None
+        self.drop_weapon_time = None
 
         self.ticks = 0
 
@@ -33,6 +37,8 @@ class Board:
         self.place_characters()
         self.place_weapons()
         self.generate_crime()
+
+        self.agent = Agent(self.start_room, self.rooms, self.characters, self.weapons, self.crime_time, self.drop_weapon_time)
         self.agent.get_initial_facts()
 
         print("L'agent AI arrive sur les lieux du crime afin d'enquêter sur le meurtre.")
@@ -71,7 +77,7 @@ class Board:
                 room = Room(room_type)
 
                 if room_type is self.__class__.START_ROOM:
-                    self.agent.current_room = room
+                    self.start_room = room
 
                 if bottom_room is not None:
                     room.add_neighbour_room(bottom_room, Directions.BOTTOM)
@@ -170,7 +176,7 @@ class Board:
                         character.victim = True
                         self.victim = character
                         victim_killed = True
-                        self.agent.crime_time = time_value
+                        self.crime_time = time_value
 
                         print("Il est {} heure. Le criminel, {}, assassine {} avec son/sa {} dans le/la {}".format(
                             str(time_value) + "h",
@@ -187,7 +193,7 @@ class Board:
                 if self.criminal.weapon is not None:
                     self.criminal.room.drop_weapon(self.criminal.weapon)
 
-                self.agent.drop_weapon_time = self.get_current_time_value()
+                self.drop_weapon_time = time_value
 
                 # Lorsqu'il y a un autre personnage dans la pièce de la victime, celui-ci découvre la victime
                 if len(self.victim.room.characters) > 1:
@@ -207,7 +213,11 @@ class Board:
 
     def start_investigation(self):
 
-        self.agent.ask_for_fact("À quelle heure est mort " + self.victim.character_type.value, "grammars/personne_morte_heure.fcfg")
+        self.agent.ask_for_fact("À quelle heure est mort " + self.victim.character_type.value + " ?", "grammars/personne_morte_heure.fcfg")
+        self.agent.ask_for_fact("À quelle heure le meurtrier a laissé échapper son arme ?", "grammars/arme_tombee_heure.fcfg")
+
+        current_time = self.get_current_time_value()
+        self.agent.crime_inference.create_clause(self.agent.crime_inference.heure_actuelle_clause, current_time)
         continue_investigation = True
 
         while continue_investigation:
@@ -216,11 +226,12 @@ class Board:
 
             print("L'agent se trouve dans le/la " + room)
 
+            print(self.agent.crime_inference.get_suspect())
+
             # L'agent recueille les informations sur la pièce dans laquelle il se trouve présentement
             if not self.agent.current_room.visited:
 
-                self.agent.crime_inference.add_clause(self.agent.crime_inference.create_clause(self.agent.crime_inference.piece_clause,
-                                                                                               room))
+                self.agent.crime_inference.create_clause(self.agent.crime_inference.piece_clause, room)
                 self.agent.current_room.visited = True
 
                 # L'agent note la pièce de chaque arme
@@ -241,9 +252,9 @@ class Board:
 
                     # L'agent note la pièce dans laquelle se trouve chaque suspect ainsi que la pièce de la victime
                     if character.victim:
-                        self.agent.discover_victim(character, room, self.get_current_time_value())
+                        self.agent.discover_victim(character, room, current_time)
                     else:
-                        self.agent.discover_character(character, room, self.get_current_time_value())
+                        self.agent.discover_character(character, room, current_time)
 
             # Ensuite, l'humain termine l'enquête ou déplace l'agent à la pièce suivante
             key = self.agent.game_io.inputYesNoFromTerminal("Voulez-vous poursuivre l'enquête?").value

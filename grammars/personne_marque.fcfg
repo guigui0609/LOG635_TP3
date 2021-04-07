@@ -1,7 +1,10 @@
 %start S
 
-S[SEM=<Personne_Marque(?np, ?adj)>] -> N[SEM=?n] V Adj[SEM=?adj]
-N[SEM=?n] -> Nprop[SEM=?n]  Nt
+S[SEM=<VictimeMarque(?adj)>] -> Det Nc Prep N[SEM=?n] V Adj[SEM=?adj]
+Det -> 'Le' | 'La'
+Nc -> 'corps' | 'crâne' | 'cou' | 'poitrine'
+Prep -> 'de'
+N[SEM=?n] -> Nt Nprop[SEM=?n]
 V -> 'est'
 
 Nprop[SEM=<ColonelMustard>] -> 'Mustard'
