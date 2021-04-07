@@ -44,6 +44,8 @@ class CrimeInference:
         # p. ex.: Mustard est la victime
         self.victim_clause = 'Victime({})'
 
+        self.suspect_clause = 'Suspect({})'
+
         # paramètre 1 : personne
         # p. ex.: Mustard a des marques au cou
         self.body_mark_clause = 'MarqueCou({})'
@@ -100,28 +102,14 @@ class CrimeInference:
         self.clauses.append(expr('Arme_Marque(x,y) & VictimeMarque(y) ==> ArmeCrime(x)'))
 
         # Determiner la pièce où le meurtrier à laissé tomber l'arme du crime
-        self.clauses.append(expr('ArmeCrime(y) & Piece_Arme(x,y) ==> PieceArmeTombee(x)'))
+        self.clauses.append(expr('ArmeCrime(x) & Arme_Piece(x,y) ==> PieceArmeTombee(y)'))
 
         # Si la personne est morte alors elle est innocente et ce n'est pas un suicide
         self.clauses.append(expr('Victime(x) ==> Innocent(x)'))
 
-        # Si un arme n'est pas l'arme du crime, l'arme n'est pas l'arme du crime
-        self.clauses.append(expr('Arme(x) & ArmeCrime(y) ==> ArmePasCrime(x)'))
-
-        # Si une pièce n'est pas la pièce où à eu lieu le crime, la pièce n'est pas la pièce où à eu lieu le crime
-        self.clauses.append(expr('Piece(x) & PieceCrime(y)  ==> PiecePasCrime(x)'))
-
-        # Si une pièce n'est pas la pièce où se trouve l'arme du crime, la pièce n'est pas la pièce où se trouve l'arme
-        # du crime
-        self.clauses.append(expr('Piece(x) & PieceArmeTombee(y)  ==> PiecePasArmeTombee(x)'))
-
-        # Si la personne se trouve dans une pièce qui n'est pas la pièce du crime à l'heure du crime, alors elle est
-        # innocente
-        self.clauses.append(expr('Personne_Piece_Heure(x, y, z) & HeureCrime(z) & PiecePasCrime(y) ==> Innocent(x)'))
-
-        # Si la personne se trouve dans une pièce qui n'est pas la pièce où le meurtrier à laissé tomber son arme à
-        # l'heure où le meurtrier à laissé tomber son arme, alors elle est innocente
-        self.clauses.append(expr('Personne_Piece_Heure(x, y, z) & HeureArmeTombee(z) & PiecePasArmeTombee(y) ==> Innocent(x)'))
+        # Si la personne se trouve dans la pièce où le meurtrier a laissé tomber son arme à l'heure où le meurtrier a
+        # laissé tomber son arme, alors la personne est suspecte.
+        self.clauses.append(expr('Personne_Piece_Heure(x, y, z) & HeureArmeTombee(z) & PieceArmeTombee(y) ==> Suspect(x)'))
 
 
     # Demander à la base de connaissances qui est la victime
@@ -157,7 +145,7 @@ class CrimeInference:
             return result[x]
 
     def get_weapon_drop_room(self):
-        result = self.crime_kb.ask(expr('HeureArmeTombee(x)'))
+        result = self.crime_kb.ask(expr('PieceArmeTombee(x)'))
         if not result:
             return result
         else:
@@ -170,16 +158,15 @@ class CrimeInference:
         else:
             return result[x]
 
-    def get_clause(self, clause):
-        result = self.crime_kb.ask(expr(clause))
+    def get_suspect(self):
+        result = self.crime_kb.ask(expr('Suspect(x)'))
         if not result:
             return result
         else:
             return result[x]
 
-    # Demander à la base de connaissances le suspect
-    def get_suspect(self):
-        result = self.crime_kb.ask(expr('Suspect(x)'))
+    def get_clause(self, clause):
+        result = self.crime_kb.ask(expr(clause))
         if not result:
             return result
         else:

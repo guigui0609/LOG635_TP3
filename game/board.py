@@ -1,5 +1,6 @@
 import math
 import random
+import time
 from typing import List
 
 from data.data import Directions
@@ -42,6 +43,7 @@ class Board:
         self.agent.get_initial_facts()
 
         print("L'agent AI arrive sur les lieux du crime afin d'enquêter sur le meurtre.")
+        time.sleep(2)
         self.agent.game_io.inputYesNoFromTerminal("Désirez-vous commencer l'enquête?")
 
         self.start_investigation()
@@ -158,6 +160,7 @@ class Board:
                     self.criminal.character_type.value,
                     self.criminal.room.weapon.value,
                     self.criminal.room.room_type.value))
+                time.sleep(2)
 
                 self.criminal.take_weapon()
                 weapon_taken = True
@@ -184,6 +187,7 @@ class Board:
                             self.victim.character_type.value,
                             self.criminal.weapon.value,
                             self.criminal.room.room_type.value))
+                        time.sleep(2)
                         break
 
             elif victim_killed:
@@ -209,11 +213,11 @@ class Board:
                                 character.character_type.value,
                                 self.victim.character_type.value,
                                 self.victim.room.room_type.value))
+                            time.sleep(2)
                             break
 
     def start_investigation(self):
 
-        self.agent.ask_for_fact("À quelle heure est mort " + self.victim.character_type.value + " ?", "grammars/personne_morte_heure.fcfg")
         self.agent.ask_for_fact("À quelle heure le meurtrier a laissé échapper son arme ?", "grammars/arme_tombee_heure.fcfg")
 
         current_time = self.get_current_time_value()
@@ -225,8 +229,7 @@ class Board:
             room = self.agent.current_room.room_type.value
 
             print("L'agent se trouve dans le/la " + room)
-
-            print(self.agent.crime_inference.get_suspect())
+            time.sleep(2)
 
             # L'agent recueille les informations sur la pièce dans laquelle il se trouve présentement
             if not self.agent.current_room.visited:
@@ -270,3 +273,5 @@ class Board:
     def identify_murderer(self):
         # TODO
         suspect = self.agent.crime_inference.get_suspect()
+        print("L'agent AI amène le(s) suspect(s) " + str(suspect) + " au poste de police pour un interrogatoire plus approfondi.")
+        time.sleep(2)
