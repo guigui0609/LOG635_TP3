@@ -17,10 +17,6 @@ class SpecificKeys(Enum):
     NO = "2"
     INVALID = "INVALID"
 
-class CommunicationTypes(Enum):
-    AUDIO = "1"
-    TEXT = "2"
-
 class IOController:
     def __init__(self):
         self.__micInputUsed = False
