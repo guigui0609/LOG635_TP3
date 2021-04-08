@@ -32,3 +32,8 @@ class Character:
 
         self.weapon = self.room.weapon
         self.room.weapon = None
+
+    def drop_weapon(self):
+
+        self.room.dropped_weapon = self.weapon
+        self.weapon = None

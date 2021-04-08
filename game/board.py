@@ -3,6 +3,7 @@ import random
 import time
 from typing import List
 
+from data.constants import Constants
 from data.data import Directions
 from data.game_data import RoomTypes, CharacterTypes, WeaponTypes
 from game.agent import Agent
@@ -43,7 +44,7 @@ class Board:
         self.agent.get_initial_facts()
 
         print("L'agent AI arrive sur les lieux du crime afin d'enquêter sur le meurtre.")
-        time.sleep(2)
+        time.sleep(Constants.TIME_BETWEEN_DIALOG)
         self.agent.game_io.inputYesNoFromTerminal("Désirez-vous commencer l'enquête?")
 
         self.start_investigation()
@@ -92,12 +93,14 @@ class Board:
     def place_characters(self):
 
         indexes = []
-        for i in range(len(self.rooms)):
-            indexes.append(i)
 
         character_types_iter = CharacterTypes.__iter__()
 
         for i in range(self.nb_characters):
+
+            if not indexes or len(indexes) == 0:
+                for i in range(len(self.rooms)):
+                    indexes.append(i)
 
             index = int(random.random() * len(indexes))
             character_type = character_types_iter.__next__()
@@ -109,12 +112,14 @@ class Board:
     def place_weapons(self):
 
         indexes = []
-        for i in range(len(self.rooms)):
-            indexes.append(i)
 
         weapon_types_iter = WeaponTypes.__iter__()
 
         for i in range(self.nb_weapons):
+
+            if not indexes or len(indexes) == 0:
+                for i in range(len(self.rooms)):
+                    indexes.append(i)
 
             index = int(random.random() * len(indexes))
             weapon = weapon_types_iter.__next__()
@@ -160,7 +165,7 @@ class Board:
                     self.criminal.character_type.value,
                     self.criminal.room.weapon.value,
                     self.criminal.room.room_type.value))
-                time.sleep(2)
+                time.sleep(Constants.TIME_BETWEEN_DIALOG)
 
                 self.criminal.take_weapon()
                 weapon_taken = True
@@ -187,7 +192,7 @@ class Board:
                             self.victim.character_type.value,
                             self.criminal.weapon.value,
                             self.criminal.room.room_type.value))
-                        time.sleep(2)
+                        time.sleep(Constants.TIME_BETWEEN_DIALOG)
                         break
 
             elif victim_killed:
@@ -195,14 +200,14 @@ class Board:
                 # Après avoir tué sa victime, le criminel laisse tomber son arme dans la salle dans laquelle il se
                 # trouve
                 if self.criminal.weapon is not None:
-                    self.criminal.room.drop_weapon(self.criminal.weapon)
 
-                self.drop_weapon_time = time_value
+                    self.criminal.drop_weapon()
+                    self.drop_weapon_time = time_value
 
                 # Lorsqu'il y a un autre personnage dans la pièce de la victime, celui-ci découvre la victime
                 if len(self.victim.room.characters) > 1:
 
-                    characters = self.criminal.room.characters.values()
+                    characters = self.victim.room.characters.values()
 
                     # Le personnage dans la pièce qui n'est pas la victime elle-même découvre la victime
                     for character in characters:
@@ -213,12 +218,12 @@ class Board:
                                 character.character_type.value,
                                 self.victim.character_type.value,
                                 self.victim.room.room_type.value))
-                            time.sleep(2)
+                            time.sleep(Constants.TIME_BETWEEN_DIALOG)
                             break
 
     def start_investigation(self):
 
-        self.agent.ask_for_fact("À quelle heure le meurtrier a laissé échapper son arme ?", "grammars/arme_tombee_heure.fcfg")
+        self.agent.ask_for_fact("À quelle heure le meurtrier a laissé tomber son arme ?", "grammars/arme_tombee_heure.fcfg")
 
         current_time = self.get_current_time_value()
         self.agent.crime_inference.create_clause(self.agent.crime_inference.heure_actuelle_clause, current_time)
@@ -229,7 +234,7 @@ class Board:
             room = self.agent.current_room.room_type.value
 
             print("L'agent se trouve dans le/la " + room)
-            time.sleep(2)
+            time.sleep(Constants.TIME_BETWEEN_DIALOG)
 
             # L'agent recueille les informations sur la pièce dans laquelle il se trouve présentement
             if not self.agent.current_room.visited:
@@ -271,7 +276,7 @@ class Board:
         self.identify_murderer()
 
     def identify_murderer(self):
-        # TODO
+
         suspect = self.agent.crime_inference.get_suspect()
         print("L'agent AI amène le(s) suspect(s) " + str(suspect) + " au poste de police pour un interrogatoire plus approfondi.")
-        time.sleep(2)
+        time.sleep(Constants.TIME_BETWEEN_DIALOG)

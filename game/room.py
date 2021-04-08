@@ -54,6 +54,3 @@ class Room:
 
     def add_weapon(self, weapon_type: WeaponTypes):
         self.weapon = weapon_type
-
-    def drop_weapon(self, weapon_type: WeaponTypes):
-        self.dropped_weapon = weapon_type

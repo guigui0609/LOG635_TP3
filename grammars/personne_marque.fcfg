@@ -3,7 +3,7 @@
 S[SEM=<VictimeMarque(?adj)>] -> Det Nc Prep N[SEM=?n] V Adj[SEM=?adj]
 Det -> 'Le' | 'La'
 Nc -> 'corps' | 'crâne' | 'cou' | 'poitrine'
-Prep -> 'de'
+Prep -> 'de' | 'du'
 N[SEM=?n] -> Nt Nprop[SEM=?n]
 V -> 'est'
 

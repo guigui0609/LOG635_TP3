@@ -92,10 +92,7 @@ class Agent:
     def discover_character(self, character, room, time):
 
         self.game_io.outputToTerminal("L'agent rencontre " + character.character_type.value + ".")
-        key = self.game_io.inputYesNoFromTerminal("Voulez-vous interroger cette personne?").value
-
-        if key == "1":
-            self.interrogate(character)
+        self.interrogate(character)
 
         self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause, character.character_type.value,
                                                room, time)

@@ -8,6 +8,9 @@ import keyboard
 from enum import Enum
 
 # Class enum utilisé pour la communication avec les touches directionnelles et les touches oui et non
+from data.constants import Constants
+
+
 class SpecificKeys(Enum):
     UP_ARROW = "Top"
     DOWN_ARROW = "Bottom"
@@ -106,7 +109,7 @@ class IOController:
         self.__keyPressed = SpecificKeys.INVALID
 
         while self.__keyPressed == SpecificKeys.INVALID:
-            time.sleep(1)
+            time.sleep(Constants.TIME_BETWEEN_DIALOG)
 
         print()
         return self.__keyPressed
@@ -131,7 +134,7 @@ class IOController:
     # Canal de communication 3: L'agent écrit à l'utilisateur via le terminal
     def outputToTerminal(self, textToOutput):
         print(textToOutput)
-        time.sleep(2)
+        time.sleep(Constants.TIME_BETWEEN_DIALOG)
 
     # Méthodes privés
 
