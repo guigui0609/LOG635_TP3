@@ -44,7 +44,7 @@ class IOController:
             response = self.__inputFromMic()
 
             if not response["success"]:
-                self.__outputToTerminal("Je ne peux pas accéder à Google Speach en ce moment. Veuillez entrer"
+                self.outputToTerminal("Je ne peux pas accéder à Google Speach en ce moment. Veuillez entrer"
                                         "le texte sur la ligne de commande et nous réessaierons plus tard!")
                 return self.__inputTextFromTerminal()
 
@@ -53,13 +53,13 @@ class IOController:
 
                 if inputText is None:
                     output = "Je n'ai pas réussi à capter votre voix."
-                    self.__outputToTerminal(output)
+                    self.outputToTerminal(output)
                     self.__outputTextAsSound(output)
                     self.__incrementSpeechFailedCounter()
                     return self.__handleInputFailed(True)
 
                 else:
-                    self.__outputToTerminal("J'ai compris: \"" + inputText + "\" Est-ce correct?")
+                    self.outputToTerminal("J'ai compris: \"" + inputText + "\" Est-ce correct?")
 
                     # Pour simuler une vrai conversation avec un robot :)
                     self.output("J'ai compris " + inputText + ". Est-ce correct?")
@@ -74,7 +74,7 @@ class IOController:
 
         elif not self.__textFileInputUsed:
             inputText = self.__inputFromFile()
-            self.__outputToTerminal("J'ai lu: \"" + inputText + "\". Est-ce correct?")
+            self.outputToTerminal("J'ai lu: \"" + inputText + "\". Est-ce correct?")
 
             promptAnswer = self.inputYesNoFromTerminal()
             if promptAnswer == SpecificKeys.YES:
@@ -92,10 +92,10 @@ class IOController:
     def output(self, text):
         if not self.__soundOutputUsed:
             self.__soundOutputUsed = True
-            self.__outputToTerminal(text)
+            self.outputToTerminal(text)
             self.__outputTextAsSound(text)
         else:
-            self.__outputToTerminal(text)
+            self.outputToTerminal(text)
 
     # Méthode pour avoir une touche directionnelle. Utilisé pour se déplacer de pièces en pièces.
     # Canal de communication 4: L'utilisateur utilise les touches directionnelles dans le terminal
@@ -121,7 +121,7 @@ class IOController:
         return self.__keyPressed
 
     # Canal de communication 3: L'agent écrit à l'utilisateur via le terminal
-    def __outputToTerminal(self, textToOutput):
+    def outputToTerminal(self, textToOutput):
         print(textToOutput)
         time.sleep(Constants.TIME_BETWEEN_DIALOG)
 
@@ -129,7 +129,7 @@ class IOController:
 
     def __handleInputFailed(self, playSound=False):
         output = "Veuillez entrer votre texte dans la console:"
-        self.__outputToTerminal(output)
+        self.outputToTerminal(output)
 
         if playSound:
             self.__outputTextAsSound(output)
@@ -178,8 +178,8 @@ class IOController:
     def __inputFromFile(self):
         readyToRead = False
         while not readyToRead:
-            self.__outputToTerminal("Veuillez entrer le texte dans le fichier inputFile.txt")
-            self.__outputToTerminal("Est-ce que le fichier inputFile.txt est prêt à être lu?")
+            self.outputToTerminal("Veuillez entrer le texte dans le fichier inputFile.txt")
+            self.outputToTerminal("Est-ce que le fichier inputFile.txt est prêt à être lu?")
             promptInput = self.inputYesNoFromTerminal()
 
             if promptInput == SpecificKeys.YES:
@@ -214,7 +214,7 @@ class IOController:
         if not isinstance(microphone, sr.Microphone):
             raise TypeError("`microphone` must be `Microphone` instance")
 
-        self.__outputToTerminal("Parlez maintenant:")
+        self.outputToTerminal("Parlez maintenant:")
 
         # adjust the recognizer sensitivity to ambient noise and record audio
         # from the microphone
