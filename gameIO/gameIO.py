@@ -188,7 +188,7 @@ class IOController:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         filename = os.path.join(dir_path, 'inputFile.txt')
 
-        f = open(filename, "r")
+        f = open(filename, "r", encoding="utf-8")
         return f.read()
 
     # Canal de communication 2, l'utilisateur utilise le microphone pour communiquer au programme
