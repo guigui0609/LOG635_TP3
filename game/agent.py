@@ -58,8 +58,8 @@ class Agent:
 
     def interrogate(self, character):
 
-        key = self.game_io.inputYesNoFromTerminal(
-            "Voulez-vous demander qui " + character.character_type.value + " a rencontré une heure après le crime?").value
+        self.game_io.output("Voulez-vous demander qui " + character.character_type.value + " a rencontré une heure après le crime?")
+        key = self.game_io.inputYesNoFromTerminal().value
         if key == "1":
             self.interrogate_at_time(character, self.drop_weapon_time)
 
@@ -69,19 +69,19 @@ class Agent:
         room = character.rooms[time].room_type.value
 
         for encounter in encounters:
-            self.game_io.outputToTerminal(
+            self.game_io.output(
                 encounter.character_type.value + " se trouvait dans le/la " + room + " à " + str(time) + "h")
             encounter = encounter.character_type.value
             self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause, encounter, room, time)
 
     def discover_weapon(self, weapon, room):
 
-        self.game_io.outputToTerminal("L'agent trouve un/une " + weapon)
+        self.game_io.output("L'agent trouve un/une " + weapon)
         self.crime_inference.create_clause(self.crime_inference.weapon_room_clause, weapon, room)
 
     def discover_victim(self, character, room, time):
 
-        self.game_io.outputToTerminal("L'agent découvre le corps de " + character.character_type.value)
+        self.game_io.output("L'agent découvre le corps de " + character.character_type.value)
 
         self.crime_inference.create_clause(self.crime_inference.victim_clause, character.character_type.value)
         self.crime_inference.create_clause(self.crime_inference.person_room_hour_clause, character.character_type.value,
@@ -106,12 +106,12 @@ class Agent:
             direction = Util.convert_key_to_direction(key)
 
             if direction is None:
-                self.game_io.outputToTerminal("La touche entrée " + key + " n'est pas valide.")
+                self.game_io.output("La touche entrée " + key + " n'est pas valide.")
             else:
                 neighbour_room = self.current_room.get_neighbour_room(direction)
 
                 if neighbour_room is None:
-                    self.game_io.outputToTerminal("Il n'y a pas de pièce dans la direction demandée. Entrez une autre direction.")
+                    self.game_io.output("Il n'y a pas de pièce dans la direction demandée. Entrez une autre direction.")
                 else:
                     agent_moved = True
                     self.current_room = neighbour_room

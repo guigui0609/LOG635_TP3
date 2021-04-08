@@ -20,10 +20,6 @@ class SpecificKeys(Enum):
     NO = "2"
     INVALID = "INVALID"
 
-class CommunicationTypes(Enum):
-    AUDIO = "1"
-    TEXT = "2"
-
 class IOController:
     def __init__(self):
         self.__micInputUsed = False
@@ -48,7 +44,7 @@ class IOController:
             response = self.__inputFromMic()
 
             if not response["success"]:
-                self.outputToTerminal("Je ne peux pas accéder à Google Speach en ce moment. Veuillez entrer"
+                self.__outputToTerminal("Je ne peux pas accéder à Google Speach en ce moment. Veuillez entrer"
                                         "le texte sur la ligne de commande et nous réessaierons plus tard!")
                 return self.__inputTextFromTerminal()
 
@@ -57,29 +53,28 @@ class IOController:
 
                 if inputText is None:
                     output = "Je n'ai pas réussi à capter votre voix."
-                    self.outputToTerminal(output)
+                    self.__outputToTerminal(output)
                     self.__outputTextAsSound(output)
+                    self.__incrementSpeechFailedCounter()
                     return self.__handleInputFailed(True)
 
                 else:
-                    self.outputToTerminal("J'ai compris: \"" + inputText + "\" Est-ce correct?")
+                    self.__outputToTerminal("J'ai compris: \"" + inputText + "\" Est-ce correct?")
 
                     # Pour simuler une vrai conversation avec un robot :)
-                    promptAnswer = self.inputYesNoFromTerminal("J'ai compris " + inputText + ". Est-ce correct?", True)
+                    self.output("J'ai compris " + inputText + ". Est-ce correct?")
+                    self.__outputTextAsSound("J'ai compris " + inputText + ". Est-ce correct?")
+                    promptAnswer = self.inputYesNoFromTerminal()
                     if promptAnswer == SpecificKeys.YES:
                         self.__micInputUsed = True
                         return inputText
                     else:
-                        self.__micInputFailedAttempt += 1
-
-                        if self.__micInputFailedAttempt == 2:
-                            self.__micInputUsed = True # On abandonne le mic!
-
+                        self.__incrementSpeechFailedCounter()
                         return self.__handleInputFailed(True)
 
         elif not self.__textFileInputUsed:
             inputText = self.__inputFromFile()
-            self.outputToTerminal("J'ai lu: \"" + inputText + "\". Est-ce correct?")
+            self.__outputToTerminal("J'ai lu: \"" + inputText + "\". Est-ce correct?")
 
             promptAnswer = self.inputYesNoFromTerminal()
             if promptAnswer == SpecificKeys.YES:
@@ -97,16 +92,16 @@ class IOController:
     def output(self, text):
         if not self.__soundOutputUsed:
             self.__soundOutputUsed = True
-            self.outputToTerminal(text)
+            self.__outputToTerminal(text)
             self.__outputTextAsSound(text)
         else:
-            self.outputToTerminal(text)
+            self.__outputToTerminal(text)
 
     # Méthode pour avoir une touche directionnelle. Utilisé pour se déplacer de pièces en pièces.
     # Canal de communication 4: L'utilisateur utilise les touches directionnelles dans le terminal
     def inputArrowKeyFromTerminal(self):
-        print("Entrez une touche directionnelle pour changer de pièce.")
         self.__keyPressed = SpecificKeys.INVALID
+        print("Entrez une touche directionnelle pour changer de pièce.")
 
         while self.__keyPressed == SpecificKeys.INVALID:
             time.sleep(Constants.TIME_BETWEEN_DIALOG)
@@ -115,15 +110,9 @@ class IOController:
         return self.__keyPressed
 
     # Canal de communication 4: l'utilisateur dit oui ou non à travers le terminal
-    def inputYesNoFromTerminal(self, msg, output_as_sound = False):
-
-        if output_as_sound:
-            self.__outputTextAsSound(msg)
-        else:
-            print(msg)
-
-        print("Entrez 1 pour OUI ou 2 pour NON")
+    def inputYesNoFromTerminal(self):
         self.__keyPressed = SpecificKeys.INVALID
+        print("Entrez 1 pour OUI ou 2 pour NON")
 
         while self.__keyPressed == SpecificKeys.INVALID:
             time.sleep(1)
@@ -132,7 +121,7 @@ class IOController:
         return self.__keyPressed
 
     # Canal de communication 3: L'agent écrit à l'utilisateur via le terminal
-    def outputToTerminal(self, textToOutput):
+    def __outputToTerminal(self, textToOutput):
         print(textToOutput)
         time.sleep(Constants.TIME_BETWEEN_DIALOG)
 
@@ -140,12 +129,18 @@ class IOController:
 
     def __handleInputFailed(self, playSound=False):
         output = "Veuillez entrer votre texte dans la console:"
-        self.outputToTerminal(output)
+        self.__outputToTerminal(output)
 
         if playSound:
             self.__outputTextAsSound(output)
 
         return self.__inputTextFromTerminal()
+
+    def __incrementSpeechFailedCounter(self):
+        self.__micInputFailedAttempt += 1
+
+        if self.__micInputFailedAttempt == 2:
+            self.__micInputUsed = True  # On abandonne le mic si ça ne marche pas après 2 essais!
 
     # Canal de communication 2, l'agent communique à l'utilisateur à travers le son
     def __outputTextAsSound(self, textToOutput):
@@ -183,8 +178,8 @@ class IOController:
     def __inputFromFile(self):
         readyToRead = False
         while not readyToRead:
-            self.outputToTerminal("Veuillez entrer le texte dans le fichier inputFile.txt")
-            self.outputToTerminal("Est-ce que le fichier inputFile.txt est prêt à être lu?")
+            self.__outputToTerminal("Veuillez entrer le texte dans le fichier inputFile.txt")
+            self.__outputToTerminal("Est-ce que le fichier inputFile.txt est prêt à être lu?")
             promptInput = self.inputYesNoFromTerminal()
 
             if promptInput == SpecificKeys.YES:
@@ -219,7 +214,7 @@ class IOController:
         if not isinstance(microphone, sr.Microphone):
             raise TypeError("`microphone` must be `Microphone` instance")
 
-        self.outputToTerminal("Parlez maintenant:")
+        self.__outputToTerminal("Parlez maintenant:")
 
         # adjust the recognizer sensitivity to ambient noise and record audio
         # from the microphone

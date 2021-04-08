@@ -45,7 +45,8 @@ class Board:
 
         print("L'agent AI arrive sur les lieux du crime afin d'enquêter sur le meurtre.")
         time.sleep(Constants.TIME_BETWEEN_DIALOG)
-        self.agent.game_io.inputYesNoFromTerminal("Désirez-vous commencer l'enquête?")
+        self.agent.game_io.output("Désirez-vous commencer l'enquête?")
+        self.agent.game_io.inputYesNoFromTerminal()
 
         self.start_investigation()
 
@@ -265,7 +266,8 @@ class Board:
                         self.agent.discover_character(character, room, current_time)
 
             # Ensuite, l'humain termine l'enquête ou déplace l'agent à la pièce suivante
-            key = self.agent.game_io.inputYesNoFromTerminal("Voulez-vous poursuivre l'enquête?").value
+            self.agent.game_io.output("Voulez-vous poursuivre l'enquête?")
+            key = self.agent.game_io.inputYesNoFromTerminal().value
 
             if key == "2":
                 continue_investigation = False
