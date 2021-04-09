@@ -4,8 +4,8 @@ Q : 'À quelle heure le meurtrier a laissé tomber son arme?'
 R : 'Le meurtrier a laissé tomber son arme à {HeureDuCrime + 1} h'
 ex : 'Le meurtrier a laissé tomber son arme à 0 h'
 
-Q : 'Dans quel état se trouve le corps de Mr Green?'
-R : 'Le/La {PartieDuCorps} de Mr Green est {Marque}'
+Q : 'Dans quel état se trouve le corps de {victime}?'
+R : 'Le/La {PartieDuCorps} de {victime} est {Marque}'
 ex : 'La poitrine de Mr Green est incisée'
 
 -- Partie du corps et marque en fonction des différents types d'armes --
