@@ -59,7 +59,6 @@ class IOController:
                     return self.__handleInputFailed(True)
 
                 else:
-                    self.outputToTerminal("J'ai compris: \"" + inputText + "\" Est-ce correct?")
 
                     # Pour simuler une vrai conversation avec un robot :)
                     self.output("J'ai compris " + inputText + ". Est-ce correct?")

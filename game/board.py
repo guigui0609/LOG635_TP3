@@ -1,3 +1,4 @@
+import json
 import math
 import random
 import time
@@ -23,13 +24,14 @@ class Board:
         self.rooms = []
         self.characters: List[Character] = []
         self.weapons = []
-        self.criminal = None
-        self.victim = None
         self.start_room = None
         self.agent = None
 
         self.crime_time = None
         self.drop_weapon_time = None
+        self.crime_weapon = None
+        self.victim = None
+        self.criminal = None
 
         self.ticks = 0
 
@@ -45,6 +47,7 @@ class Board:
 
         print("L'agent AI arrive sur les lieux du crime afin d'enquêter sur le meurtre.")
         time.sleep(Constants.TIME_BETWEEN_DIALOG)
+
         self.agent.game_io.output("Désirez-vous commencer l'enquête?")
         self.agent.game_io.inputYesNoFromTerminal()
 
@@ -160,6 +163,8 @@ class Board:
 
             # Lorsque le meurtrier entre dans une pièce qui contient une arme, il récupère celle-ci
             if self.criminal.room.weapon != None and not weapon_taken:
+
+                self.crime_weapon = self.criminal.room.weapon
 
                 print("Il est {}. Le criminel, {}, trouve un(e) {} dans le/la {}. Il le/la ramasse avec appréhension".format(
                     str(time_value) + "h",
